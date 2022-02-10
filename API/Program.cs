@@ -1,9 +1,11 @@
 using System.Reflection;
+using API.Errors;
 using Application.ActivityFeature;
 using Application.Core;
 using Application.Interfaces;
 using FluentValidation.AspNetCore;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Repositories;
@@ -13,10 +15,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers().AddFluentValidation(config =>
-{
-    config.RegisterValidatorsFromAssemblyContaining<Create>();
-});
+//builder.Services.AddControllers().AddFluentValidation().AddNewtonsoftJson();
+
+builder.Services.AddControllers().AddNewtonsoftJson()
+    .AddFluentValidation(config =>
+    {
+        config.RegisterValidatorsFromAssemblyContaining<Create>();
+    })
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+           var errors = context.ModelState.Where(e=>e.Value.Errors.Count > 0).SelectMany(x=>x.Value.Errors).Select(x=>x.ErrorMessage).ToArray();
+
+            var errorResponse = new ValidationErrorResponse { Errors = errors };
+
+            return new BadRequestObjectResult(errorResponse);
+        };
+    });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -34,12 +50,15 @@ builder.Services.AddDbContext<DataContext>(opt =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseStatusCodePagesWithReExecute("/Errors/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

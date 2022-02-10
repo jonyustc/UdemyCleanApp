@@ -1,3 +1,4 @@
+using Application.Core;
 using Application.Interfaces;
 using Domain;
 using MediatR;
@@ -5,12 +6,12 @@ namespace Application.ActivityFeature
 {
     public class Details
     {
-        public class Query : IRequest<Activity>
+        public class Query : IRequest<Result<Activity>>
         {
             public int Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Query, Activity>
+        public class Handler : IRequestHandler<Query, Result<Activity>>
         {
             private readonly IReposotory<Activity> _detailsRepo;
             public Handler(IReposotory<Activity> detailsRepo)
@@ -18,9 +19,13 @@ namespace Application.ActivityFeature
                 _detailsRepo = detailsRepo;
             }
 
-            public async Task<Activity> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<Activity>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _detailsRepo.GetByIdAsync(request.Id);
+                var data = await _detailsRepo.GetByIdAsync(request.Id);
+
+                //if (data == null) return Result<Activity>.Failed("Activity not found");
+                data.Id.ToString();
+                return Result<Activity>.Success(data);
             }
         }
     }

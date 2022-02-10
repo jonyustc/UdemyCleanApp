@@ -1,3 +1,4 @@
+using API.Errors;
 using Application.ActivityFeature;
 using Application.Interfaces;
 using Domain;
@@ -16,13 +17,26 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetActivities()
         {
-            return Ok(await Mediator.Send(new List.ActivityRequestQuery()));
+            var activity = await Mediator.Send(new List.ActivityRequestQuery());
+
+            if(activity == null) return NotFound();
+
+            return Ok(activity);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetActivities(int id)
         {
-            return Ok(await Mediator.Send(new Details.Query { Id = id }));
+            var activity = await Mediator.Send(new Details.Query { Id = id });
+
+
+            return HandleResult(activity);
+
+            //if (activity == null) return NotFound();
+
+            //return Ok(activity);
+
+            //return Ok(await Mediator.Send(new Details.Query { Id = id }));
         }
 
         [HttpPost]
@@ -44,7 +58,26 @@ namespace API.Controllers
             return Ok(await Mediator.Send(new Delete.Command { Id = id }));
         }
 
-        
+        [HttpGet("notfound")]
+        public ActionResult GetNotFoundRequest()
+        {
+            var activity = (string)null;
+
+            if (activity == null)
+            {
+                return NotFound(new ApiResponse(404));
+            }
+
+            return Ok();
+        }
+
+
+        [HttpGet("badrequest")]
+        public IActionResult BadRequestError()
+        {
+            return BadRequest(new ApiResponse(400));
+        }
+
 
     }
 }
