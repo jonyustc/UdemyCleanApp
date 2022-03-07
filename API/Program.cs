@@ -28,7 +28,7 @@ builder.Services.AddControllers().AddNewtonsoftJson()
         {
            var errors = context.ModelState.Where(e=>e.Value.Errors.Count > 0).SelectMany(x=>x.Value.Errors).Select(x=>x.ErrorMessage).ToArray();
 
-            var errorResponse = new ValidationErrorResponse { Errors = errors };
+            var errorResponse = new Result<Create> { Errors = errors,IsSuccess=false,IsInvalid=true,StatusCode=400 };
 
             return new BadRequestObjectResult(errorResponse);
         };
@@ -57,7 +57,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseStatusCodePagesWithReExecute("/Errors/{0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();

@@ -1,6 +1,7 @@
 using Application.Interfaces;
 using AutoMapper;
 using Domain;
+using FluentValidation;
 using MediatR;
 
 namespace Application.ActivityFeature
@@ -11,6 +12,15 @@ namespace Application.ActivityFeature
         {
             public Activity Activity { get; set; }
         }
+
+
+        //public class commandvalidator : abstractvalidator<command>
+        //{
+        //    public commandvalidator()
+        //    {
+        //        rulefor(x => x.activity).setvalidator(new activityvalidator());
+        //    }
+        //}
 
         public class Handler : IRequestHandler<Command>
         {

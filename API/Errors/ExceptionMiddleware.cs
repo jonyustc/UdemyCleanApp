@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using Application.ActivityFeature;
+using Application.Core;
+using System.Net;
 using System.Text.Json;
 
 namespace API.Errors
@@ -26,8 +28,23 @@ namespace API.Errors
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                var response = host.IsDevelopment() ? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString())
-                    : new ApiException((int)HttpStatusCode.InternalServerError, ex.Message);
+                //var response = host.IsDevelopment() ? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString())
+                //    : new ApiException((int)HttpStatusCode.InternalServerError, ex.Message);
+
+                var response = host.IsDevelopment() ? new Result<Create>
+                {
+                    Errors = new List<string> { ex.Message },
+                    IsSuccess = false,
+                    StatusCode = new ApiException((int)HttpStatusCode.InternalServerError).StatusCode,
+                    Details = ex.StackTrace.ToString()
+                } :
+                new Result<Create>
+                {
+                    Errors = new List<string> { ex.Message },
+                    IsSuccess = false,
+                    StatusCode = new ApiException((int)HttpStatusCode.InternalServerError).StatusCode
+                };
+
 
                 var options = new JsonSerializerOptions {  PropertyNamingPolicy= JsonNamingPolicy.CamelCase };
 

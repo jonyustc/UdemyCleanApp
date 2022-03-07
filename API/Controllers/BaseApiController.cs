@@ -16,10 +16,31 @@ namespace API.Controllers
 
         public ActionResult HandleResult<T>(Result<T> result)
         {
-            if(result.IsSuccess && result.Value != null) return Ok(result.Value);
-            if(result.IsSuccess && result.Value == null) return NotFound(new ApiResponse(404));
+            //return Ok(result);
+            if(result.IsSuccess && result.Value != null)
+            {
+                result.StatusCode = new ApiResponse(200).StatusCode;
+                return Ok(result);
+            }
+                
 
-            return BadRequest(new ApiResponse(400,result.Error));
+            if(!result.IsSuccess && result.Value == null)
+            {
+                //result.Error = new ApiResponse(404).Message;
+                result.StatusCode = new ApiResponse(404).StatusCode;
+                return NotFound(result);
+            }
+
+            if (!result.IsInvalid && result.Value == null)
+            {
+                //result.Error = new ApiResponse(404).Message;
+                result.StatusCode = new ValidationErrorResponse().StatusCode;
+                return BadRequest(result);
+            }
+
+            //result.Error = new ApiResponse(400).Message;
+            result.StatusCode = new ApiResponse(400).StatusCode;
+            return BadRequest(result);
         }
     }
 }

@@ -3,6 +3,7 @@ using Application.ActivityFeature;
 using Application.Interfaces;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
+using Application.LoginFeature;
 
 namespace API.Controllers
 {
@@ -18,6 +19,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetActivities()
         {
             var activity = await Mediator.Send(new List.ActivityRequestQuery());
+            //var activity = await Mediator.Send(new LoginList.LoginRequestQuery());
 
             if(activity == null) return NotFound();
 
@@ -42,7 +44,10 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateActivity([FromBody] Activity activity)
         {
-            return Ok(await Mediator.Send(new Create.Command { Activity = activity }));
+            var activityToReturn = await Mediator.Send(new Create.Command { Activity = activity });
+
+
+            return HandleResult(activityToReturn);
         }
 
         [HttpPut("{id}")]

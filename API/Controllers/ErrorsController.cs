@@ -1,4 +1,6 @@
 ﻿using API.Errors;
+using Application.ActivityFeature;
+using Application.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +13,13 @@ namespace API.Controllers
         [HttpGet]
         public ActionResult Get(int code)
         {
-            return BadRequest(new ApiResponse(code));
+            var result = Result<Create>.Failed(new List<string> { new ApiResponse(code).Message });
+            result.StatusCode = 400;
+
+            //result.StatusCode = new ValidationErrorResponse().StatusCode;
+            //return BadRequest(result);
+
+            return BadRequest(result);
         }
     }
 }

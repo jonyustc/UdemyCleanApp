@@ -14,6 +14,7 @@ namespace Application.ActivityFeature
         public class ActivityRequestHandler : IRequestHandler<ActivityRequestQuery, IReadOnlyList<Activity>>
         {
             private readonly IReposotory<Activity> _listRepo;
+
             public ActivityRequestHandler(IReposotory<Activity> listRepo)
             {
                 _listRepo = listRepo;

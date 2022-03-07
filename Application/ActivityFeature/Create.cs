@@ -1,3 +1,4 @@
+using Application.Core;
 using Application.Interfaces;
 using AutoMapper;
 using Domain;
@@ -8,7 +9,7 @@ namespace Application.ActivityFeature
 {
     public class Create
     {
-        public class Command : IRequest
+        public class Command : IRequest<Result<Activity>>
         {
             public Activity Activity { get; set; }
         }
@@ -21,7 +22,7 @@ namespace Application.ActivityFeature
             }
         }
 
-        public class Handler : IRequestHandler<Command>
+        public class Handler : IRequestHandler<Command, Result<Activity>>
         {
             private readonly IMapper _mapper;
             private readonly IReposotory<Activity> _createRepo;
@@ -32,15 +33,28 @@ namespace Application.ActivityFeature
                 _mapper = mapper;
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Activity>> Handle(Command request, CancellationToken cancellationToken)
             {
-                //var activity=_mapper.Map<Activity>(request);
+                //var validator = new ActivityValidator();
+                //var validationResult = await validator.ValidateAsync(request.Activity);
+
+                //if (validationResult.Errors.Count > 0)
+                //{
+                    
+                //    var ValidationErrors = new List<string>();
+                //    foreach (var error in validationResult.Errors)
+                //    {
+                //        ValidationErrors.Add(error.ErrorMessage);
+                //    }
+
+                //    return Result<Activity>.ValidationFailed(ValidationErrors);
+                //}
 
                 _createRepo.Add(request.Activity);
 
                 await _createRepo.SaveChangesAsync();
 
-                return Unit.Value;
+                return Result<Activity>.Success(request.Activity);
             }
         }
     }

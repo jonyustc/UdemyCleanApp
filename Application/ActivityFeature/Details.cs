@@ -23,9 +23,14 @@ namespace Application.ActivityFeature
             {
                 var data = await _detailsRepo.GetByIdAsync(request.Id);
 
-                //if (data == null) return Result<Activity>.Failed("Activity not found");
+                
                 data.Id.ToString();
+                //if(data == null)
+                //    return Result<Activity>.Failed(new List<string> { "Activity not found" });
+
+
                 return Result<Activity>.Success(data);
+                
             }
         }
     }
