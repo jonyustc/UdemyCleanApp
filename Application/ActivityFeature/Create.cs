@@ -54,7 +54,7 @@ namespace Application.ActivityFeature
 
                 await _createRepo.SaveChangesAsync();
 
-                return Result<Activity>.Success(request.Activity);
+                return Result<Activity>.Success(new List<Activity> { request.Activity });
             }
         }
     }

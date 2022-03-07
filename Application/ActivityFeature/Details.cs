@@ -29,7 +29,7 @@ namespace Application.ActivityFeature
                 //    return Result<Activity>.Failed(new List<string> { "Activity not found" });
 
 
-                return Result<Activity>.Success(data);
+                return Result<Activity>.Success(new List<Activity> { data});
                 
             }
         }

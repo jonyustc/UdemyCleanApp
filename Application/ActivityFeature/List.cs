@@ -1,17 +1,18 @@
 using MediatR;
 using Domain;
 using Application.Interfaces;
+using Application.Core;
 
 namespace Application.ActivityFeature
 {
     public class List
     {
-        public class ActivityRequestQuery : IRequest<IReadOnlyList<Activity>>
+        public class ActivityRequestQuery : IRequest<Result<Activity>>
         {
 
         }
 
-        public class ActivityRequestHandler : IRequestHandler<ActivityRequestQuery, IReadOnlyList<Activity>>
+        public class ActivityRequestHandler : IRequestHandler<ActivityRequestQuery, Result<Activity>>
         {
             private readonly IReposotory<Activity> _listRepo;
 
@@ -20,9 +21,11 @@ namespace Application.ActivityFeature
                 _listRepo = listRepo;
             }
 
-            public async Task<IReadOnlyList<Activity>> Handle(ActivityRequestQuery request, CancellationToken cancellationToken)
+            public async Task<Result<Activity>> Handle(ActivityRequestQuery request, CancellationToken cancellationToken)
             {
-                return await _listRepo.GetListAsync();
+                var activities = await _listRepo.GetListAsync();
+
+                return Result<Activity>.Success(activities);
             }
         }
     }

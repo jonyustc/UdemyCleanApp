@@ -17,21 +17,21 @@ namespace API.Controllers
         public ActionResult HandleResult<T>(Result<T> result)
         {
             //return Ok(result);
-            if(result.IsSuccess && result.Value != null)
+            if(result.IsSuccess && result.Values != null)
             {
                 result.StatusCode = new ApiResponse(200).StatusCode;
                 return Ok(result);
             }
                 
 
-            if(!result.IsSuccess && result.Value == null)
+            if(!result.IsSuccess && result.Values == null)
             {
                 //result.Error = new ApiResponse(404).Message;
                 result.StatusCode = new ApiResponse(404).StatusCode;
                 return NotFound(result);
             }
 
-            if (!result.IsInvalid && result.Value == null)
+            if (!result.IsInvalid && result.Values == null)
             {
                 //result.Error = new ApiResponse(404).Message;
                 result.StatusCode = new ValidationErrorResponse().StatusCode;

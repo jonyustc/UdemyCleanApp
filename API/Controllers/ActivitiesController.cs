@@ -21,9 +21,9 @@ namespace API.Controllers
             var activity = await Mediator.Send(new List.ActivityRequestQuery());
             //var activity = await Mediator.Send(new LoginList.LoginRequestQuery());
 
-            if(activity == null) return NotFound();
+            //if(activity == null) return NotFound();
 
-            return Ok(activity);
+            return HandleResult(activity);
         }
 
         [HttpGet("{id}")]
