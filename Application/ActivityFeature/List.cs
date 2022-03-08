@@ -9,7 +9,7 @@ namespace Application.ActivityFeature
     {
         public class ActivityRequestQuery : IRequest<Result<Activity>>
         {
-
+            public PaginationParams param { get; set; }
         }
 
         public class ActivityRequestHandler : IRequestHandler<ActivityRequestQuery, Result<Activity>>
@@ -23,9 +23,14 @@ namespace Application.ActivityFeature
 
             public async Task<Result<Activity>> Handle(ActivityRequestQuery request, CancellationToken cancellationToken)
             {
-                var activities = await _listRepo.GetListAsync();
+                var activities = _listRepo.GetQueryAble();
 
-                return Result<Activity>.Success(activities);
+                var nullActivity = await _listRepo.GetListAsync();
+
+                
+
+
+                return Result<Activity>.CreatePagination(activities,request.param.PageNumber,request.param.PageSize);
             }
         }
     }

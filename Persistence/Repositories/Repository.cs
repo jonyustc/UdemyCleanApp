@@ -33,6 +33,11 @@ namespace Persistence.Repositories
             return await _context.Set<T>().ToListAsync();
         }
 
+        public IQueryable<T> GetQueryAble()
+        {
+            return _context.Set<T>().AsQueryable();
+        }
+
         public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();

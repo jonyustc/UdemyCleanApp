@@ -4,6 +4,7 @@ using Application.Interfaces;
 using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Application.LoginFeature;
+using Application.Core;
 
 namespace API.Controllers
 {
@@ -16,9 +17,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetActivities()
+        public async Task<IActionResult> GetActivities([FromQuery]PaginationParams param)
         {
-            var activity = await Mediator.Send(new List.ActivityRequestQuery());
+            var activity = await Mediator.Send(new List.ActivityRequestQuery { param = param});
             //var activity = await Mediator.Send(new LoginList.LoginRequestQuery());
 
             //if(activity == null) return NotFound();

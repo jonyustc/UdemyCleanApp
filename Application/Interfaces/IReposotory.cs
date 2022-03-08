@@ -9,6 +9,8 @@ namespace Application.Interfaces
         void Add(T entity);
         void DeleteAsync(T entity);
         Task<int> SaveChangesAsync();
-        
+        IQueryable<T> GetQueryAble();
+
+
     }
 }

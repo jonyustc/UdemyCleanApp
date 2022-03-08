@@ -28,7 +28,7 @@ builder.Services.AddControllers().AddNewtonsoftJson()
         {
            var errors = context.ModelState.Where(e=>e.Value.Errors.Count > 0).SelectMany(x=>x.Value.Errors).Select(x=>x.ErrorMessage).ToArray();
 
-            var errorResponse = new Result<Create> { Errors = errors,IsSuccess=false,IsInvalid=true,StatusCode=400 };
+            var errorResponse = new Result<Create>(errors,false,true,400);
 
             return new BadRequestObjectResult(errorResponse);
         };

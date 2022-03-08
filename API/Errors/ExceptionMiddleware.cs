@@ -32,18 +32,18 @@ namespace API.Errors
                 //    : new ApiException((int)HttpStatusCode.InternalServerError, ex.Message);
 
                 var response = host.IsDevelopment() ? new Result<Create>
-                {
-                    Errors = new List<string> { ex.Message },
-                    IsSuccess = false,
-                    StatusCode = new ApiException((int)HttpStatusCode.InternalServerError).StatusCode,
-                    Details = ex.StackTrace.ToString()
-                } :
+                (
+                    new List<string> { ex.Message },
+                    false,
+                    new ApiException((int)HttpStatusCode.InternalServerError).StatusCode,
+                    ex.StackTrace.ToString()
+                ) :
                 new Result<Create>
-                {
-                    Errors = new List<string> { ex.Message },
-                    IsSuccess = false,
-                    StatusCode = new ApiException((int)HttpStatusCode.InternalServerError).StatusCode
-                };
+                (
+                    new List<string> { ex.Message },
+                    false,
+                    new ApiException((int)HttpStatusCode.InternalServerError).StatusCode
+                );
 
 
                 var options = new JsonSerializerOptions {  PropertyNamingPolicy= JsonNamingPolicy.CamelCase };
